@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Declan's Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Jost:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f0ede8;
+    --bg2: #e8e3dc;
+    --ink: #2a2520;
+    --ink-dim: #9a9088;
+    --ink-mid: #5a524a;
+    --stone: #c8c0b4;
+    --sage: #7a8c78;
+    --dusk: #8a8070;
+    --warm: #b89878;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    font-family: 'Jost', sans-serif;
+    overflow: hidden;
+  }
+
+  /* ── Animated background ── */
+  .bg {
+    position: fixed; inset: 0; z-index: 0;
+    overflow: hidden;
+  }
+
+  /* Slow drifting circles — like water ripples or mist */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0;
+    animation: orbDrift ease-in-out infinite;
+  }
+  .orb1 { width: 600px; height: 600px; background: rgba(184,152,120,0.18); top: -10%; left: -10%; animation-duration: 22s; animation-delay: 0s; }
+  .orb2 { width: 500px; height: 500px; background: rgba(122,140,120,0.14); bottom: -10%; right: -5%; animation-duration: 28s; animation-delay: -8s; }
+  .orb3 { width: 400px; height: 400px; background: rgba(138,128,112,0.12); top: 30%; left: 40%; animation-duration: 18s; animation-delay: -14s; }
+  .orb4 { width: 300px; height: 300px; background: rgba(200,192,180,0.15); bottom: 20%; left: 20%; animation-duration: 24s; animation-delay: -4s; }
+
+  @keyframes orbDrift {
+    0%   { transform: translate(0, 0) scale(1); opacity: 0; }
+    10%  { opacity: 1; }
+    50%  { transform: translate(30px, -40px) scale(1.08); opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translate(0, 0) scale(1); opacity: 0; }
+  }
+
+  /* Fine grain texture overlay */
+  .bg::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 180px;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Thin horizontal lines — paper-like */
+  .bg::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: linear-gradient(transparent 98%, rgba(150,140,130,0.08) 100%);
+    background-size: 100% 48px;
+    pointer-events: none;
+  }
+
+  /* Floating particles */
+  .particle {
+    position: absolute;
+    width: 2px; height: 2px;
+    border-radius: 50%;
+    background: var(--stone);
+    animation: particleFloat linear infinite;
+    opacity: 0;
+  }
+  @keyframes particleFloat {
+    0%   { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.2; }
+    100% { transform: translateY(-60px) translateX(var(--drift)); opacity: 0; }
+  }
+
+  /* ── Main layout ── */
+  .container {
+    position: relative; z-index: 1;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  /* ── Header ── */
+  .header {
+    text-align: center;
+    margin-bottom: 64px;
+    animation: fadeSlideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+
+  .eyebrow {
+    font-family: 'Jost', sans-serif;
+    font-weight: 200;
+    font-size: 11px;
+    letter-spacing: 0.45em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 7vw, 72px);
+    font-weight: 300;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .title em {
+    font-style: italic;
+    color: var(--dusk);
+  }
+
+  .subtitle {
+    margin-top: 14px;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--ink-dim);
+    letter-spacing: 0.1em;
+  }
+
+  /* Decorative line under title */
+  .title-line {
+    width: 40px; height: 1px;
+    background: var(--warm);
+    margin: 20px auto 0;
+    animation: lineGrow 1.5s 0.8s cubic-bezier(0.16,1,0.3,1) both;
+    transform-origin: center;
+  }
+  @keyframes lineGrow { from { width: 0; opacity: 0; } to { width: 40px; opacity: 1; } }
+
+  /* ── Links ── */
+  .links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .link-item {
+    animation: fadeSlideUp 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .link-item:nth-child(1) { animation-delay: 0.3s; }
+  .link-item:nth-child(2) { animation-delay: 0.45s; }
+  .link-item:nth-child(3) { animation-delay: 0.60s; }
+  .link-item:nth-child(4) { animation-delay: 0.75s; }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .link-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px 28px;
+    background: rgba(255,252,248,0.6);
+    border: 1px solid rgba(200,192,180,0.5);
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--ink);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+  }
+
+  /* Ripple fill on hover */
+  .link-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(184,152,120,0.12), rgba(122,140,120,0.08));
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  .link-card:hover::before { opacity: 1; }
+
+  /* Left accent bar */
+  .link-card::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 20%; bottom: 20%;
+    width: 2px;
+    background: var(--warm);
+    transform: scaleY(0);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    transform-origin: center;
+    border-radius: 1px;
+  }
+  .link-card:hover::after { transform: scaleY(1); }
+
+  .link-card:hover {
+    transform: translateX(6px);
+    border-color: rgba(184,152,120,0.4);
+    box-shadow: 0 8px 32px rgba(120,100,80,0.12), -4px 0 20px rgba(184,152,120,0.08);
+  }
+
+  /* Number */
+  .link-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--stone);
+    line-height: 1;
+    min-width: 28px;
+    transition: color 0.4s;
+  }
+  .link-card:hover .link-num { color: var(--warm); }
+
+  /* Divider */
+  .link-divider {
+    width: 1px; height: 36px;
+    background: var(--stone);
+    opacity: 0.5;
+    flex-shrink: 0;
+  }
+
+  /* Text */
+  .link-text {}
+  .link-label {
+    font-family: 'Jost', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+    transition: color 0.3s;
+  }
+  .link-card:hover .link-label { color: var(--ink); }
+  .link-desc {
+    font-size: 11px;
+    color: var(--ink-dim);
+    margin-top: 3px;
+    letter-spacing: 0.05em;
+    font-weight: 300;
+  }
+
+  /* Arrow */
+  .link-arrow {
+    margin-left: auto;
+    font-size: 18px;
+    color: var(--stone);
+    transition: transform 0.4s cubic-bezier(0.16,1,0.3,1), color 0.3s;
+    flex-shrink: 0;
+  }
+  .link-card:hover .link-arrow { transform: translateX(5px); color: var(--warm); }
+
+  /* Icon */
+  .link-icon {
+    font-size: 20px;
+    opacity: 0.6;
+    transition: opacity 0.3s, transform 0.4s cubic-bezier(0.16,1,0.3,1);
+    flex-shrink: 0;
+  }
+  .link-card:hover .link-icon { opacity: 1; transform: scale(1.15); }
+
+  /* ── Footer ── */
+  .footer {
+    position: absolute;
+    bottom: 28px;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--stone);
+    text-transform: uppercase;
+    animation: fadeSlideUp 1s 1.2s both;
+  }
+
+  /* ── Breathing ring decoration ── */
+  .ring {
+    position: fixed;
+    border-radius: 50%;
+    border: 1px solid rgba(180,160,140,0.1);
+    animation: ringBreath ease-in-out infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .ring1 { width: 500px; height: 500px; top: 50%; left: 50%; margin: -250px; animation-duration: 8s; }
+  .ring2 { width: 750px; height: 750px; top: 50%; left: 50%; margin: -375px; animation-duration: 12s; animation-delay: -3s; }
+  .ring3 { width: 1000px; height: 1000px; top: 50%; left: 50%; margin: -500px; animation-duration: 16s; animation-delay: -7s; }
+
+  @keyframes ringBreath {
+    0%, 100% { transform: scale(0.96); opacity: 0.3; }
+    50% { transform: scale(1.04); opacity: 0.7; }
+  }
+
+  @media (max-width: 600px) {
+    .link-card { padding: 16px 20px; }
+    .link-num { font-size: 22px; }
+    .links { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+  <div class="orb orb4"></div>
+</div>
+
+<div class="ring ring1"></div>
+<div class="ring ring2"></div>
+<div class="ring ring3"></div>
+
+<div class="container">
+  <div class="header">
+    <div class="eyebrow">Portfolio &nbsp;·&nbsp; Declan Fu</div>
+    <h1 class="title">Select a <em>project</em></h1>
+    <div class="title-line"></div>
+    <p class="subtitle">Four tools, one place.</p>
+  </div>
+
+  <div class="links">
+    <div class="link-item">
+      <a class="link-card" href="https://declanfu.github.io/Calculator/" target="_blank">
+        <div class="link-num">01</div>
+        <div class="link-divider"></div>
+        <div class="link-icon">🧮</div>
+        <div class="link-text">
+          <div class="link-label">Calculator</div>
+          <div class="link-desc">Scientific computing tool</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="link-item">
+      <a class="link-card" href="https://declanfu.github.io/Global-Combat-Aircraft-Index/" target="_blank">
+        <div class="link-num">02</div>
+        <div class="link-divider"></div>
+        <div class="link-icon">✈️</div>
+        <div class="link-text">
+          <div class="link-label">Combat Aircraft Index</div>
+          <div class="link-desc">Global military aviation database</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="link-item">
+      <a class="link-card" href="https://declanfu.github.io/Stock-Rate/" target="_blank">
+        <div class="link-num">03</div>
+        <div class="link-divider"></div>
+        <div class="link-icon">📈</div>
+        <div class="link-text">
+          <div class="link-label">Stock Rate</div>
+          <div class="link-desc">Market intelligence & analysis</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+    </div>
+
+    <div class="link-item">
+      <a class="link-card" href="https://declanfu.github.io/worldclock/" target="_blank">
+        <div class="link-num">04</div>
+        <div class="link-divider"></div>
+        <div class="link-icon">🌍</div>
+        <div class="link-text">
+          <div class="link-label">World Clock</div>
+          <div class="link-desc">Global time zones at a glance</div>
+        </div>
+        <div class="link-arrow">→</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="footer">declanfu.github.io</div>
+
+<script>
+  // Floating particles
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (Math.random() * 100) + 'vw';
+    p.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+    p.style.animationDuration = (12 + Math.random() * 16) + 's';
+    p.style.animationDelay = (-Math.random() * 20) + 's';
+    p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+    document.querySelector('.bg').appendChild(p);
+  }
+</script>
+</body>
+</html>
